@@ -75,10 +75,9 @@ public:
     void solve () {
         for (int i=1; i<NT; i++) {
             if (i >= NX) break;
-            for (int j=1; j<NX-i; j++) {
-                u1[i][j] = u1[i-1][j] - Co*(u1[i-1][j] - u1[i-1][j-1]);
-                u2[i][j] = u2[i-1][j] + Co*(u2[i-1][j] - u2[i-1][j-1]);
-
+            for (int j=i; j<NX-i; j++) {
+                u1[i][j] = u1[i-1][j] - Co*(u1[i-1][j] - u1[i-1][j-1]); // правый уголок
+                u2[i][j] = u2[i-1][j] + Co*(u2[i-1][j+1] - u2[i-1][j]); // левый уголок
             }
         }
     }
@@ -87,24 +86,24 @@ public:
         return nodes;
     }
     std::vector<std::vector<double>> get_solution_1 () {
-        /*std::vector<std::vector<double>> v1(NT);
+        std::vector<std::vector<double>> v1(NT);
         for (auto& i : v1) i.resize(NX);
         for (int i=0; i < NT; i++) {
             for (int j=0; j<NX; j++) {
                 v1[i][j] = 0.5*(u1[i][j]+u2[i][j]);
             }
-        }*/
-        return u1;
+        }
+        return v1;
     }
     std::vector<std::vector<double>> get_solution_2 () {
-        /*std::vector<std::vector<double>> v2(NT);
+        std::vector<std::vector<double>> v2(NT);
         for (auto& i : v2) i.resize(NX);
         for (int i=0; i < NT; i++) {
             for (int j=0; j<NX; j++) {
-                v2[i][j] = 0.5*(u1[i][j]+u2[i][j]);
+                v2[i][j] = 0.5*(u1[i][j]-u2[i][j]);
             }
-        }*/
-        return u2;
+        }
+        return v2;
     }
 
 private:
@@ -133,7 +132,7 @@ int main () {
     file << "x,y1(time=0),y2(time=0.5),y3(time=1),y4(time=1.5)" << std::endl;
     for (int index = 0; index < x.size(); ++index){
         //std::cout << x[index] << " zzz " << y[0][index] << std::endl;
-        file << x[index] << "," << y1[0][index] << "," << y1[int(round(0.5/0.03))][index] << "," << y1[int(round(1/0.03))][index]
+        file << x[index] << "," << y1[0][index] << "," << y1[int(round(0.5/0.03))][index] << "," << y1[int(round(0.9/0.03))][index]
          << "," << y1[int(round(1.5/0.03))][index] << std::endl;
     }
     file.close();
